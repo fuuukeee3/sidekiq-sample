@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    image: postgres:16.2
+    ports:
+      - 5432:5432
+    environment:
+      - TZ=Asia/Tokyo
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    working_dir: /app
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+
+volumes: 
+  db:
+    name: 'sidekiq-sample'
