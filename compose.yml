@@ -31,6 +31,29 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
 
+  redis:
+    image: "redis:7.2.4-alpine"
+    volumes:
+      - redis_volume:/data
+    command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
+
+  sidekiq:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    command: bundle exec sidekiq
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    depends_on:
+      - db
+      - redis
+
 volumes: 
   db:
     name: 'sidekiq-sample'
+  redis_volume:
+    name: 'sidekiq-sample-redis'

@@ -70,3 +70,5 @@ group :test do
 end
 
 gem "dotenv-rails"
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
